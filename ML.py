@@ -7,34 +7,30 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-# Get the directory of the script
-base_dir = os.path.dirname(os.path.abspath(__file__))
+# Load datasets
+@st.cache
+def load_data():
+    try:
+        scoreboard = pd.read_csv("Scoreboard.csv", encoding="utf-8")
+        matches = pd.read_csv("Matches.csv", encoding="utf-8")
+        players = pd.read_csv("Players.csv", encoding="utf-8")
+        return scoreboard, matches, players
+    except Exception as e:
+        st.error(f"Error loading data: {str(e)}")
+        return None, None, None
 
-# Define CSV file paths
-scoreboard_path = os.path.join(base_dir, "Scoreboard.csv")
-matches_path = os.path.join(base_dir, "Matches.csv")
-players_path = os.path.join(base_dir, "Players.csv")
+scoreboard_df, matches_df, players_df = load_data()
 
-# Try loading files
-try:
-    scoreboard = pd.read_csv(scoreboard_path, encoding="utf-8")
-    matches = pd.read_csv(matches_path, encoding="utf-8")
-    players = pd.read_csv(players_path, encoding="utf-8")
-    st.write("CSV files loaded successfully!")
-except FileNotFoundError as e:
-    st.error(f"File not found: {e.filename}")
-except Exception as e:
-    st.error(f"Error loading CSV: {e}")
-
-
+if scoreboard_df is None or matches_df is None or players_df is None:
+    st.stop()
 
 # Merge datasets
 merged_df = pd.merge(scoreboard_df, matches_df[['match_no', 'venue', 'toss_winner']], on='match_no', how='left')
 merged_df['toss_winner'] = merged_df['toss_winner'].fillna("Unknown")
 
-
-# Ensure LabelEncoders are trained with all possible values
+# Label Encoding
 all_teams = list(set(matches_df['toss_winner'].dropna().unique()))
 all_venues = list(set(matches_df['venue'].dropna().unique()))
 
@@ -67,12 +63,12 @@ model.fit(X_train, y_train)
 # Streamlit UI
 st.title("🏏 IPL Score & Player Performance Predictor")
 
-# Team Selection with Logos
+# Team Logos
 team_logos = {
-    "Mumbai Indians": r"C:\Users\admin\OneDrive\Documents\Desktop\ML\IM.jpeg",
-    "Chennai Super Kings": r"C:\Users\admin\OneDrive\Documents\Desktop\ML\CSK.png",
-    "Royal Challengers Bangalore": r"C:\Users\admin\OneDrive\Documents\Desktop\ML\RCB.jpeg",
-    "Kolkata Knight Riders": r"C:\Users\admin\OneDrive\Documents\Desktop\ML\KKR.png"
+    "Mumbai Indians": "https://your_image_url/IM.jpeg",
+    "Chennai Super Kings": "https://your_image_url/CSK.png",
+    "Royal Challengers Bangalore": "https://your_image_url/RCB.jpeg",
+    "Kolkata Knight Riders": "https://your_image_url/KKR.png"
 }
 
 t1 = st.selectbox("🏠 Select Batting Team", list(team_logos.keys()))
@@ -82,12 +78,9 @@ col1, col2 = st.columns(2)
 for team, col in zip([t1, t2], [col1, col2]):
     with col:
         logo_path = team_logos.get(team, "default.png")
-        if os.path.exists(logo_path):
-            st.image(logo_path, width=100)
-        else:
-            st.warning(f"Logo not found for {team}")
+        st.image(logo_path, width=100)
 
-# Toss Winner Selection (Filtered Based on Teams)
+# Toss Winner Selection
 toss_winner = st.selectbox("🎲 Toss Winner", [t1, t2])
 
 # User Inputs
@@ -99,17 +92,8 @@ venue = st.selectbox("📍 Venue", venue_encoder.classes_)
 weather = st.selectbox("🌦️ Weather Conditions", ["Clear", "Cloudy", "Rainy", "Humid"])
 
 # Encode Inputs
-try:
-    toss_encoded = team_encoder.transform([toss_winner])[0]
-except ValueError:
-    st.error(f"❌ Toss winner '{toss_winner}' not recognized!")
-    st.stop()
-
-try:
-    venue_encoded = venue_encoder.transform([venue])[0]
-except ValueError:
-    st.error(f"❌ Venue '{venue}' not recognized!")
-    st.stop()
+toss_encoded = team_encoder.transform([toss_winner])[0]
+venue_encoded = venue_encoder.transform([venue])[0]
 
 # Weather Impact Factor
 weather_factor = {"Clear": 1.0, "Cloudy": 0.9, "Rainy": 0.85, "Humid": 0.95}[weather]
@@ -123,6 +107,7 @@ if st.button("⚡ Predict Score"):
     
     st.success(f"🏆 Predicted Score: {predicted_score:.2f}")
 
+    # Win Probability
     if target_score > 0:
         required_run_rate = (target_score - current_score) / (20 - overs + 1)
         win_prob = min(max((run_rate / required_run_rate) * 100, 10), 90)
@@ -156,85 +141,3 @@ if players_df is not None:
         form_factor = np.random.uniform(0.8, 1.2)
         predicted_runs = avg_runs * form_factor
         st.write(f"🏏 **Predicted Runs for {player}: {predicted_runs:.2f}**")
-
-        # Time Graph for Player Performance
-        st.subheader("📊 Player Performance Over Time")
-        overs_list = list(range(1, 21))
-        runs_list = np.cumsum(np.random.randint(2, 10, size=len(overs_list)))
-        
-        fig, ax = plt.subplots()
-        ax.plot(overs_list, runs_list, marker='o', linestyle='-', color='green', label='Runs Scored')
-        ax.set_xlabel("Overs")
-        ax.set_ylabel("Runs")
-        ax.set_title(f"Performance of {player} Over Time")
-        ax.legend()
-        st.pyplot(fig)
-# Bowler Performance Prediction
-# Bowler Performance Prediction
-if players_df is not None:
-    st.subheader("🔥 Bowler Performance Prediction")
-
-    # Select Bowler from Bowling Team
-    bowling_team_players = players_df[players_df['team'] == t2]['player_name'].dropna().unique()
-    bowler = st.selectbox("🎯 Select Bowler", bowling_team_players)
-
-    # Get Bowler Stats
-    bowler_stats = players_df[players_df['player_name'] == bowler]
-
-    if not bowler_stats.empty and 'bowling_avg' in bowler_stats.columns:
-        avg_wickets = bowler_stats['bowling_avg'].values[0]
-        economy_rate = bowler_stats['economy'].values[0] if 'economy' in bowler_stats.columns else 8.0
-        total_wickets = bowler_stats['total_wickets'].values[0] if 'total_wickets' in bowler_stats.columns else 0
-        matches_played = bowler_stats['matches'].values[0] if 'matches' in bowler_stats.columns else 1
-    else:
-        avg_wickets = 0
-        economy_rate = 8  # Default economy rate if no data
-        total_wickets = 0
-        matches_played = 1
-
-
-
-# Generate Overs List (1-20)
-overs_list = np.arange(1, 21)  # Overs from 1 to 20
-
-
-base_wickets = np.random.poisson(lam=1, size=len(overs_list))  # Poisson for realism
-wickets_per_over = np.clip(base_wickets + np.random.normal(0, 0.5, size=len(overs_list)), 0, 3).astype(int)  # Add variation
-
-# Introduce a bias: Death overs (16-20) have slightly higher wicket probability
-for i in range(len(overs_list)):
-    if 16 <= overs_list[i] <= 20:
-        wickets_per_over[i] += np.random.choice([0, 1], p=[0.6, 0.4])  # 40% chance of an extra wicket
-
-# Bar Chart for Wickets Per Over
-fig, ax = plt.subplots(figsize=(10, 5))
-ax.bar(overs_list, wickets_per_over, color='crimson', alpha=0.8)
-
-# Labels and Title
-ax.set_xticks(overs_list)
-ax.set_xlabel("Overs")
-ax.set_ylabel("Wickets Taken")
-ax.set_title("📊 Bowler Wickets Per Over (Bar Chart)")
-ax.grid(axis='y', linestyle="--", alpha=0.6)
-
-# Show plot in Streamlit
-st.pyplot(fig)
-
-
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-
-# Evaluate Model Performance
-y_pred = model.predict(X_test)
-
-# Calculate Regression Metrics
-mae = mean_absolute_error(y_test, y_pred)
-mse = mean_squared_error(y_test, y_pred)
-r2 = r2_score(y_test, y_pred)
-
-# Display Metrics in Streamlit UI
-st.subheader("📊 Model Evaluation Metrics")
-st.write(f"📈 **Mean Absolute Error (MAE):** {mae:.2f}")
-
-st.write(f"📉 **R² Score:** {r2:.2f}")
-
-# You can use these metrics to assess how well your model is performing
