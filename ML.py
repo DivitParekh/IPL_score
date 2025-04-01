@@ -8,22 +8,23 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 
-# Safe File Loading Function
-def load_csv(file_path):
-    try:
-        return pd.read_csv(file_path, encoding='latin1')
-    except Exception as e:
-        st.error(f"Error loading {file_path}: {e}")
-        return None
+# Get the directory of the script
+base_dir = os.path.dirname(__file__)
 
-# Load datasets
-scoreboard_df = load_csv(r"C:\Users\admin\OneDrive\Documents\Desktop\ML\Scoreboard.csv")
-matches_df = load_csv(r"C:\Users\admin\OneDrive\Documents\Desktop\ML\Matches.csv")
-players_df = load_csv(r"C:\Users\admin\OneDrive\Documents\Desktop\ML\Players.csv")
+# Load CSV files
+try:
+    scoreboard_path = os.path.join(base_dir, "Scoreboard.csv")
+    matches_path = os.path.join(base_dir, "Matches.csv")
+    players_path = os.path.join(base_dir, "Players.csv")
 
-if scoreboard_df is None or matches_df is None:
-    st.error("❌ Essential datasets missing! Check file paths.")
-    st.stop()
+    scoreboard = pd.read_csv(scoreboard_path)
+    matches = pd.read_csv(matches_path)
+    players = pd.read_csv(players_path)
+
+    st.write("CSV files loaded successfully!")
+except FileNotFoundError as e:
+    st.error(f"Error loading {e.filename}: {e}")
+
 
 # Merge datasets
 merged_df = pd.merge(scoreboard_df, matches_df[['match_no', 'venue', 'toss_winner']], on='match_no', how='left')
