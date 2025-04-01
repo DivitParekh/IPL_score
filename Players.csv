@@ -1,0 +1,41 @@
+player_name,team,matches,runs,wickets,average_runs,strike_rate,batting_avg,bowling_avg,role
+Rohit Sharma,Mumbai Indians,14,386,17,14,198,27.57142857,0.823529412,All-Rounder
+Ishan Kishan,Mumbai Indians,14,414,2,43,196,29.57142857,21.5,Batsman
+Suryakumar Yadav,Mumbai Indians,14,119,4,51,85,8.5,12.75,Batsman
+Jasprit Bumrah,Mumbai Indians,14,164,7,17,122,11.71428571,2.428571429,Batsman
+MS Dhoni,Chennai Super Kings,14,561,18,43,181,40.07142857,2.388888889,All-Rounder
+Ruturaj Gaikwad,Chennai Super Kings,14,633,19,50,195,45.21428571,2.631578947,All-Rounder
+Ravindra Jadeja,Chennai Super Kings,14,462,19,30,143,33,1.578947368,All-Rounder
+Deepak Chahar,Chennai Super Kings,14,507,17,56,101,36.21428571,3.294117647,All-Rounder
+Virat Kohli,Royal Challengers Bangalore,14,342,12,29,92,24.42857143,2.416666667,All-Rounder
+Faf du Plessis,Royal Challengers Bangalore,14,345,6,43,179,24.64285714,7.166666667,Batsman
+Glenn Maxwell,Royal Challengers Bangalore,14,589,13,18,97,42.07142857,1.384615385,All-Rounder
+Mohammed Siraj,Royal Challengers Bangalore,14,132,14,32,111,9.428571429,2.285714286,Bowler
+Shreyas Iyer,Kolkata Knight Riders,14,263,16,40,156,18.78571429,2.5,Bowler
+Andre Russell,Kolkata Knight Riders,14,633,12,39,133,45.21428571,3.25,All-Rounder
+Sunil Narine,Kolkata Knight Riders,14,516,17,49,189,36.85714286,2.882352941,All-Rounder
+Varun Chakravarthy,Kolkata Knight Riders,14,212,18,55,121,15.14285714,3.055555556,Bowler
+Rishabh Pant,Delhi Capitals,14,626,12,15,193,44.71428571,1.25,All-Rounder
+Prithvi Shaw,Delhi Capitals,14,305,7,24,144,21.78571429,3.428571429,Batsman
+David Warner,Delhi Capitals,14,665,1,59,104,47.5,59,Batsman
+Anrich Nortje,Delhi Capitals,14,628,13,53,96,44.85714286,4.076923077,All-Rounder
+Sanju Samson,Rajasthan Royals,14,2,7,38,60,0.142857143,5.428571429,Batsman
+Jos Buttler,Rajasthan Royals,14,335,2,11,133,23.92857143,5.5,Batsman
+Trent Boult,Rajasthan Royals,14,258,19,11,85,18.42857143,0.578947368,Bowler
+Yuzvendra Chahal,Rajasthan Royals,14,468,16,20,177,33.42857143,1.25,All-Rounder
+Aiden Markram,Sunrisers Hyderabad,14,105,7,10,147,7.5,1.428571429,Batsman
+Harry Brook,Sunrisers Hyderabad,14,133,1,12,188,9.5,12,Batsman
+Bhuvneshwar Kumar,Sunrisers Hyderabad,14,387,12,56,130,27.64285714,4.666666667,All-Rounder
+Umran Malik,Sunrisers Hyderabad,14,269,4,34,158,19.21428571,8.5,Batsman
+Shikhar Dhawan,Punjab Kings,14,85,8,12,162,6.071428571,1.5,Batsman
+Liam Livingstone,Punjab Kings,14,414,10,44,127,29.57142857,4.4,Batsman
+Arshdeep Singh,Punjab Kings,14,410,12,51,181,29.28571429,4.25,All-Rounder
+Sam Curran,Punjab Kings,14,323,5,31,51,23.07142857,6.2,Batsman
+KL Rahul,Lucknow Super Giants,14,271,13,29,54,19.35714286,2.230769231,Bowler
+Quinton de Kock,Lucknow Super Giants,14,677,3,40,132,48.35714286,13.33333333,Batsman
+Marcus Stoinis,Lucknow Super Giants,14,401,18,14,102,28.64285714,0.777777778,All-Rounder
+Ravi Bishnoi,Lucknow Super Giants,14,347,2,31,140,24.78571429,15.5,Batsman
+Hardik Pandya,Gujarat Titans,14,441,14,58,152,31.5,4.142857143,All-Rounder
+Shubman Gill,Gujarat Titans,14,376,2,19,187,26.85714286,9.5,Batsman
+Rashid Khan,Gujarat Titans,14,414,18,56,58,29.57142857,3.111111111,All-Rounder
+Mohammed Shami,Gujarat Titans,14,603,17,24,181,43.07142857,1.411764706,All-Rounder
