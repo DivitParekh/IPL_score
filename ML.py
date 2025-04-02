@@ -84,10 +84,10 @@ if scoreboard_df is not None and matches_df is not None and players_df is not No
 
     # Team Selection with Logos
     team_logos = {
-        "Mumbai Indians": "path_to_logo/IM.jpeg",
-        "Chennai Super Kings": "path_to_logo/CSK.png",
-        "Royal Challengers Bangalore": "path_to_logo/RCB.jpeg",
-        "Kolkata Knight Riders": "path_to_logo/KKR.png"
+        "Mumbai Indians": "IM.jpeg",
+        "Chennai Super Kings": "CSK.png",
+        "Royal Challengers Bangalore": "RCB.jpeg",
+        "Kolkata Knight Riders": "KKR.png"
     }
 
     t1 = st.selectbox("🏠 Select Batting Team", list(team_logos.keys()))
