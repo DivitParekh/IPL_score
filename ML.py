@@ -67,10 +67,15 @@ for old_col, new_col in column_mapping.items():
     if old_col in players_df.columns:
         players_df.rename(columns={old_col: new_col}, inplace=True)
 
+# ✅ Fill Missing Columns with Default Values
+required_columns = ["runs", "wickets", "catches", "run_outs", "stumpings", "balls_faced", "overs_bowled", "economy"]
+for col in required_columns:
+    if col not in players_df.columns:
+        players_df[col] = 0  # Assign default value
+
 # Convert data types
-for col in ["runs", "wickets", "catches", "run_outs", "stumpings", "balls_faced", "overs_bowled", "economy"]:
-    if col in players_df.columns:
-        players_df[col] = pd.to_numeric(players_df[col], errors="coerce")
+for col in required_columns:
+    players_df[col] = pd.to_numeric(players_df[col], errors="coerce")
 
 players_df.dropna(inplace=True)  # Remove missing values
 
@@ -85,7 +90,9 @@ def calculate_fantasy_points(df):
     df["fantasy_points"] += df["runs"] * 1  # 1 point per run
     df["fantasy_points"] += (df["runs"] >= 50) * 8  # Bonus for 50s
     df["fantasy_points"] += (df["runs"] >= 100) * 16  # Bonus for 100s
-    df["fantasy_points"] -= (df["balls_faced"] == 0) * 2  # -2 for ducks
+
+    if "balls_faced" in df.columns:  # Check if column exists before using it
+        df["fantasy_points"] -= (df["balls_faced"] == 0) * 2  # -2 for ducks
 
     # Bowling Points
     df["fantasy_points"] += df["wickets"] * 25  # 25 points per wicket
