@@ -18,7 +18,7 @@ def load_csv(file_path):
 
 # Load datasets
 scoreboard_df = load_csv(r"Scoreboard.csv")
-matches_df = load_csv(rMatches.csv")
+matches_df = load_csv(r"Matches.csv")
 players_df = load_csv(r"Players.csv")
 
 if scoreboard_df is None or matches_df is None:
