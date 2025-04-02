@@ -7,38 +7,34 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder, StandardScaler
+import chardet
 
-# Get the directory of the script
-base_dir = os.path.dirname(os.path.abspath(__file__))
+def detect_encoding(file_path):
+    with open(file_path, "rb") as f:
+        raw_data = f.read(10000)  # Read a sample of the file
+        result = chardet.detect(raw_data)  # Detect encoding
+        return result['encoding']
 
-# Define CSV file paths
-scoreboard_path = os.path.join(base_dir, "Scoreboard.csv")
-matches_path = os.path.join(base_dir, "Matches.csv")
-players_path = os.path.join(base_dir, "Players.csv")
-
-# Try loading files with error handling
 @st.cache_data
 def load_data():
     try:
-        # Attempt to load the CSV files with a fallback encoding if UTF-8 fails
-        scoreboard = pd.read_csv(scoreboard_path, encoding="utf-8")
-        matches = pd.read_csv(matches_path, encoding="utf-8")
-        players = pd.read_csv(players_path, encoding="utf-8")
-        st.write("CSV files loaded successfully!")
+        # Detect encoding first
+        scoreboard_encoding = detect_encoding(scoreboard_path)
+        matches_encoding = detect_encoding(matches_path)
+        players_encoding = detect_encoding(players_path)
+
+        # Load CSV with the detected encoding
+        scoreboard = pd.read_csv(scoreboard_path, encoding=scoreboard_encoding)
+        matches = pd.read_csv(matches_path, encoding=matches_encoding)
+        players = pd.read_csv(players_path, encoding=players_encoding)
+
+        st.write("✅ CSV files loaded successfully with encoding detection!")
         return scoreboard, matches, players
-    except UnicodeDecodeError as e:
-        # If UTF-8 fails, try with 'latin1' encoding (often works as a fallback)
-        st.warning(f"UTF-8 decoding failed, trying 'latin1' encoding: {e}")
-        scoreboard = pd.read_csv(scoreboard_path, encoding="latin1")
-        matches = pd.read_csv(matches_path, encoding="latin1")
-        players = pd.read_csv(players_path, encoding="latin1")
-        return scoreboard, matches, players
-    except FileNotFoundError as e:
-        st.error(f"File not found: {e.filename}")
-        return None, None, None
+
     except Exception as e:
-        st.error(f"Error loading CSV: {e}")
+        st.error(f"❌ Error loading CSV: {e}")
         return None, None, None
+
 
 # Load the data
 scoreboard_df, matches_df, players_df = load_data()
