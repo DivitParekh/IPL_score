@@ -36,7 +36,7 @@ def load_data(scoreboard_path, matches_path, players_path):
         matches = pd.read_csv(matches_path, encoding=matches_encoding)
         players = pd.read_csv(players_path, encoding=players_encoding)
 
-        st.success("✅ CSV files loaded successfully!")
+        #st.success("✅ CSV files loaded successfully!")
         return scoreboard, matches, players
 
     except Exception as e:
@@ -148,6 +148,12 @@ if st.button("⚡ Predict Score"):
 # 📌 Leaderboard for Top Players
 st.subheader("🏅 Top 10 Players by Runs")
 
+# 📌 Fix column names dynamically
+players_df.columns = players_df.columns.str.strip().str.lower()  # Convert to lowercase for consistency
+column_mapping = {"player_name": "player", "total_runs": "runs"}  # Define possible renaming
+players_df.rename(columns={col: column_mapping[col] for col in players_df.columns if col in column_mapping}, inplace=True)
+
+# 📌 Check if required columns exist
 if "player" in players_df.columns and "runs" in players_df.columns:
     players_df["runs"] = pd.to_numeric(players_df["runs"], errors="coerce")  # Convert to numeric
     players_df.dropna(subset=["player", "runs"], inplace=True)
@@ -160,7 +166,8 @@ if "player" in players_df.columns and "runs" in players_df.columns:
         .head(10)
     )
 
+    st.subheader("🏅 Top 10 Players by Runs")
     st.dataframe(leaderboard)
 else:
     st.error(f"❌ Columns found: {players_df.columns.tolist()}")
-    st.error("❌ Missing 'player' or 'runs' column in dataset!")
+    st.error("❌ Missing required columns for leaderboard!")
