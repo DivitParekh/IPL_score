@@ -9,31 +9,50 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 import chardet
 
+
 def detect_encoding(file_path):
+    """Detect the encoding of a given file."""
     with open(file_path, "rb") as f:
         raw_data = f.read(10000)  # Read a sample of the file
         result = chardet.detect(raw_data)  # Detect encoding
         return result['encoding']
 
 @st.cache_data
-def load_data():
-    try:
-        # Detect encoding first
-        scoreboard_encoding = detect_encoding(scoreboard.csv)
-        matches_encoding = detect_encoding(matches.csv)
-        players_encoding = detect_encoding(players.csv)
+def load_data(scoreboard_path, matches_path, players_path):
+    """Load data from CSV files with detected encoding."""
+    
+    # Initialize empty dataframes to avoid unbound variable error
+    scoreboard, matches, players = None, None, None  
 
-        # Load CSV with the detected encoding
+    try:
+        # Detect encoding
+        scoreboard_encoding = detect_encoding(scoreboard_path)
+        matches_encoding = detect_encoding(matches_path)
+        players_encoding = detect_encoding(players_path)
+
+        # Load CSV files with detected encoding
         scoreboard = pd.read_csv(scoreboard_path, encoding=scoreboard_encoding)
         matches = pd.read_csv(matches_path, encoding=matches_encoding)
         players = pd.read_csv(players_path, encoding=players_encoding)
 
-        st.write("✅ CSV files loaded successfully with encoding detection!")
-        return scoreboard, matches, players
-
+        st.write("✅ CSV files loaded successfully!")
+    
     except Exception as e:
         st.error(f"❌ Error loading CSV: {e}")
-        return None, None, None
+
+    return scoreboard, matches, players  # Return None if loading fails
+
+# Set your file paths
+scoreboard_path = "Scoreboard.csv"
+matches_path = "Matches.csv"
+players_path = "Players.csv"
+
+# Load the data
+scoreboard_df, matches_df, players_df = load_data(scoreboard_path, matches_path, players_path)
+
+# Check if data was loaded before proceeding
+if scoreboard_df is None or matches_df is None or players_df is None:
+    st.stop()  # Stop execution if data failed to load
 
 
 # Load the data
