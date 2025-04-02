@@ -8,8 +8,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 import chardet
-import speech_recognition as sr
-from gtts import gTTS
+import sys
+
+# Disable speech recognition on Streamlit Cloud
+if "streamlit_cloud" in sys.modules:
+    st.warning("🎤 Voice features are disabled in cloud deployment.")
+else:
+    import speech_recognition as sr
+    from gtts import gTTS
 
 # 📌 Function to detect file encoding
 def detect_encoding(file_path):
@@ -48,31 +54,20 @@ scoreboard_df, matches_df, players_df = load_data(scoreboard_path, matches_path,
 if scoreboard_df is None or matches_df is None or players_df is None:
     st.stop()  # Stop execution if data failed to load
 
-# 📌 Function for speech recognition (convert voice to text)
-def recognize_speech():
-    recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        st.info("🎙️ Speak now...")
-        recognizer.adjust_for_ambient_noise(source)
-        audio = recognizer.listen(source)
+# 📌 Debugging: Print column names
+st.write("🔍 Columns in Players.csv:", players_df.columns.tolist())
 
-    try:
-        text = recognizer.recognize_google(audio)
-        st.success(f"🗣️ You said: {text}")
-        return text
-    except sr.UnknownValueError:
-        st.error("❌ Could not understand the audio.")
-        return None
-    except sr.RequestError:
-        st.error("❌ Error connecting to Google Speech API.")
-        return None
+# Rename columns if incorrect
+if "Player Name" in players_df.columns and "Total Runs" in players_df.columns:
+    players_df.rename(columns={"Player Name": "player", "Total Runs": "runs"}, inplace=True)
 
-# 📌 Function to generate speech from text
+# 📌 Function to generate speech from text (Only for local execution)
 def speak_text(text):
-    tts = gTTS(text=text, lang="en")
-    tts.save("response.mp3")
-    os.system("start response.mp3")  # Windows
-    # os.system("mpg321 response.mp3")  # Linux/Mac
+    if "streamlit_cloud" not in sys.modules:
+        tts = gTTS(text=text, lang="en")
+        tts.save("response.mp3")
+        os.system("start response.mp3")  # Windows
+        # os.system("mpg321 response.mp3")  # Linux/Mac
 
 # 📌 Streamlit UI - Voice Assistant
 st.title("🎙️ IPL Voice Assistant & Score Predictor")
@@ -89,7 +84,7 @@ if st.button("🎤 Ask a Question"):
             response = "I can predict based on current stats. Click on Predict Score!"
         else:
             response = "I'm still learning! Ask me about IPL stats."
-        
+
         st.info(f"🤖 AI: {response}")
         speak_text(response)
 
@@ -133,7 +128,7 @@ weather_factor = {"Clear": 1.0, "Cloudy": 0.9, "Rainy": 0.85, "Humid": 0.95}[wea
 if st.button("⚡ Predict Score"):
     run_rate = current_score / (overs + 1)
     predicted_score = (current_score + (20 - overs) * run_rate) * weather_factor
-    
+
     st.success(f"🏆 Predicted Score: {predicted_score:.2f}")
 
     # 📌 Win Probability Calculation
@@ -153,7 +148,6 @@ if st.button("⚡ Predict Score"):
 # 📌 Leaderboard for Top Players
 st.subheader("🏅 Top 10 Players by Runs")
 
-players_df.columns = players_df.columns.str.strip()
 if "player" in players_df.columns and "runs" in players_df.columns:
     players_df["runs"] = pd.to_numeric(players_df["runs"], errors="coerce")  # Convert to numeric
     players_df.dropna(subset=["player", "runs"], inplace=True)
