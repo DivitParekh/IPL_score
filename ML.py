@@ -78,7 +78,7 @@ def speak_text(text):
 st.title("🎙️ IPL Voice Assistant & Score Predictor")
 
 if st.button("🎤 Ask a Question"):
-    query = recognize_speech()
+   query = st.text_input("🗣️ Type your question instead:")
     if query:
         # AI response based on queries
         if "top batsman" in query.lower():
