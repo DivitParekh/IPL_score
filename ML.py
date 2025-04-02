@@ -55,7 +55,7 @@ if scoreboard_df is None or matches_df is None or players_df is None:
     st.stop()  # Stop execution if data failed to load
 
 # 📌 Debugging: Print column names
-st.write("🔍 Columns in Players.csv:", players_df.columns.tolist())
+#st.write("🔍 Columns in Players.csv:", players_df.columns.tolist())
 
 # Rename columns if incorrect
 if "Player Name" in players_df.columns and "Total Runs" in players_df.columns:
@@ -146,7 +146,7 @@ if st.button("⚡ Predict Score"):
     st.success(f"🏆 Win Probability: {win_prob:.2f}%")
 
 # 📌 Leaderboard for Top Players
-st.subheader("🏅 Top 10 Players by Runs")
+
 
 # 📌 Fix column names dynamically
 players_df.columns = players_df.columns.str.strip().str.lower()  # Convert to lowercase for consistency
