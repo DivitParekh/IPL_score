@@ -19,9 +19,9 @@ def detect_encoding(file_path):
 def load_data():
     try:
         # Detect encoding first
-        scoreboard_encoding = detect_encoding(scoreboard_path)
-        matches_encoding = detect_encoding(matches_path)
-        players_encoding = detect_encoding(players_path)
+        scoreboard_encoding = detect_encoding(scoreboard.csv)
+        matches_encoding = detect_encoding(matches.csv)
+        players_encoding = detect_encoding(players.csv)
 
         # Load CSV with the detected encoding
         scoreboard = pd.read_csv(scoreboard_path, encoding=scoreboard_encoding)
