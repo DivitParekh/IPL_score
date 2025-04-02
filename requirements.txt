@@ -4,7 +4,7 @@ numpy
 matplotlib
 seaborn
 scikit-learn
-chardet
 speechrecognition
 gtts
-pydub
+pyaudio
+chardet
