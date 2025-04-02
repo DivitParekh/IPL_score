@@ -155,7 +155,7 @@ st.subheader("🏅 Top 10 Players by Runs")
 
 players_df.columns = players_df.columns.str.strip()
 if "player" in players_df.columns and "runs" in players_df.columns:
-    players_df["runs"] = pd.to_numeric(players_df["runs"], errors="coerce")
+    players_df["runs"] = pd.to_numeric(players_df["runs"], errors="coerce")  # Convert to numeric
     players_df.dropna(subset=["player", "runs"], inplace=True)
 
     leaderboard = (
@@ -168,4 +168,5 @@ if "player" in players_df.columns and "runs" in players_df.columns:
 
     st.dataframe(leaderboard)
 else:
+    st.error(f"❌ Columns found: {players_df.columns.tolist()}")
     st.error("❌ Missing 'player' or 'runs' column in dataset!")
