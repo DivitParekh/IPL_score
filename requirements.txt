@@ -6,5 +6,5 @@ seaborn
 scikit-learn
 speechrecognition
 gtts
-pyaudio
+soundfile
 chardet
