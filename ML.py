@@ -35,7 +35,7 @@ def load_data(scoreboard_path, matches_path, players_path):
         matches = pd.read_csv(matches_path, encoding=matches_encoding)
         players = pd.read_csv(players_path, encoding=players_encoding)
 
-       # st.write("✅ CSV files loaded successfully!")
+        st.write("✅ CSV files loaded successfully!")
     
     except Exception as e:
         st.error(f"❌ Error loading CSV: {e}")
